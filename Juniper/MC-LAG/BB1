@@ -1,3 +1,4 @@
+======================= BB1 ========================
 set system host-name BB1
 set system root-authentication plain-text-password
 
