@@ -1,7 +1,42 @@
+=======================SV1========================
 conf t
 hostname SV1
 interface FastEthernet0/0
  ip address 1.1.2.11 255.255.255.128
  duplex auto
  speed auto
-ip route 0.0.0.0 0.0.0.0 2.1.1.1
+ip route 0.0.0.0 0.0.0.0 1.1.2.1
+exit
+wr me
+
+
+=======================SV2========================
+conf t
+hostname SV2
+interface FastEthernet0/0
+ ip address 1.1.2.141 255.255.255.128
+ duplex auto
+ speed auto
+ip route 0.0.0.0 0.0.0.0 1.1.2.129
+exit
+wr me
+=======================SV2========================
+conf t
+hostname SV3
+interface FastEthernet0/0
+ ip address 1.1.2.12 255.255.255.128
+ duplex auto
+ speed auto
+ip route 0.0.0.0 0.0.0.0 1.1.2.1
+exit
+wr me
+=======================SV2========================
+conf t
+hostname SV4
+interface FastEthernet0/0
+ ip address 1.1.2.142 255.255.255.128
+ duplex auto
+ speed auto
+ip route 0.0.0.0 0.0.0.0 1.1.2.129
+exit
+wr me
