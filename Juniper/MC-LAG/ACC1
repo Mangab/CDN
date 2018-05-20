@@ -1,0 +1,28 @@
+set system host-name ACC2
+set system root-authentication plain-text-password
+
+set chassis aggregated-devices ethernet device-count 12
+set interfaces ge-0/0/0 description BB1
+set interfaces ge-0/0/0 gigether-options 802.3ad ae1
+set interfaces ge-0/0/1 description BB2
+set interfaces ge-0/0/1 gigether-options 802.3ad ae1
+set interfaces ge-0/0/2 description SV1
+set interfaces ge-0/0/2 unit 0 family bridge interface-mode access
+set interfaces ge-0/0/2 unit 0 family bridge vlan-id 101
+set interfaces ge-0/0/3 description SV2
+set interfaces ge-0/0/3 unit 0 family bridge interface-mode access
+set interfaces ge-0/0/3 unit 0 family bridge vlan-id 101
+set interfaces ae1 description BB1/2
+set interfaces ae1 aggregated-ether-options lacp active
+set interfaces ae1 unit 0 family bridge interface-mode trunk
+set interfaces ae1 unit 0 family bridge vlan-id-list 101
+set interfaces ae1 unit 0 family bridge vlan-id-list 1000
+set interfaces irb unit 1000 family inet address 2.1.1.4/24
+set bridge-domains vlan1000 description NET-MGMT
+set bridge-domains vlan1000 domain-type bridge
+set bridge-domains vlan1000 vlan-id 1000
+set bridge-domains vlan1000 routing-interface irb.1000
+set bridge-domains vlan101 description SERVICE-NET
+set bridge-domains vlan101 domain-type bridge
+set bridge-domains vlan101 vlan-id 101
+set bridge-domains vlan101 routing-interface irb.101
