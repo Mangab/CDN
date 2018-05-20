@@ -1,4 +1,5 @@
-set system host-name ACC2
+======================= ACC1 ========================
+set system host-name ACC1
 set system root-authentication plain-text-password
 
 set chassis aggregated-devices ethernet device-count 12
@@ -6,12 +7,12 @@ set interfaces ge-0/0/0 description BB1
 set interfaces ge-0/0/0 gigether-options 802.3ad ae1
 set interfaces ge-0/0/1 description BB2
 set interfaces ge-0/0/1 gigether-options 802.3ad ae1
-set interfaces ge-0/0/2 description SV1
-set interfaces ge-0/0/2 unit 0 family bridge interface-mode access
-set interfaces ge-0/0/2 unit 0 family bridge vlan-id 101
-set interfaces ge-0/0/3 description SV2
-set interfaces ge-0/0/3 unit 0 family bridge interface-mode access
-set interfaces ge-0/0/3 unit 0 family bridge vlan-id 101
+set interfaces ge-0/0/6 description SV1-1
+set interfaces ge-0/0/6 unit 0 family bridge interface-mode access
+set interfaces ge-0/0/6 unit 0 family bridge vlan-id 101
+set interfaces ge-0/0/7 description SV2-1
+set interfaces ge-0/0/7 unit 0 family bridge interface-mode access
+set interfaces ge-0/0/7 unit 0 family bridge vlan-id 101
 set interfaces ae1 description BB1/2
 set interfaces ae1 aggregated-ether-options lacp active
 set interfaces ae1 unit 0 family bridge interface-mode trunk
