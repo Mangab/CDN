@@ -1,0 +1,72 @@
+set system host-name BB2
+set system root-authentication plain-text-password
+
+set chassis aggregated-devices ethernet device-count 10
+set interfaces ge-0/0/0 description BB1
+set interfaces ge-0/0/0 gigether-options 802.3ad ae1
+set interfaces ge-0/0/1 description BB1
+set interfaces ge-0/0/1 gigether-options 802.3ad ae1
+set interfaces ge-0/0/2 description ACC1
+set interfaces ge-0/0/2 gigether-options 802.3ad ae2
+set interfaces ae1 description BB1
+set interfaces ae1 vlan-tagging
+set interfaces ae1 aggregated-ether-options lacp active
+set interfaces ae1 unit 0 family bridge interface-mode trunk
+set interfaces ae1 unit 0 family bridge vlan-id-list 5
+set interfaces ae1 unit 0 family bridge vlan-id-list 101
+set interfaces ae1 unit 0 family bridge vlan-id-list 1000
+set interfaces ae2 description ACC1     
+set interfaces ae2 vlan-tagging
+set interfaces ae2 aggregated-ether-options lacp active
+set interfaces ae2 aggregated-ether-options lacp system-id 00:00:00:00:00:01
+set interfaces ae2 aggregated-ether-options lacp admin-key 2
+set interfaces ae2 aggregated-ether-options mc-ae mc-ae-id 2
+set interfaces ae2 aggregated-ether-options mc-ae redundancy-group 1
+set interfaces ae2 aggregated-ether-options mc-ae chassis-id 1
+set interfaces ae2 aggregated-ether-options mc-ae mode active-active
+set interfaces ae2 aggregated-ether-options mc-ae status-control standby
+set interfaces ae2 unit 0 family bridge interface-mode trunk
+set interfaces ae2 unit 0 family bridge vlan-id-list 101
+set interfaces ae2 unit 0 family bridge vlan-id-list 1000
+set interfaces irb unit 5 family inet address 1.1.1.2/28
+set interfaces irb unit 101 family inet address 1.1.2.3/25 vrrp-group 1 virtual-address 1.1.2.1
+set interfaces irb unit 101 family inet address 1.1.2.3/25 vrrp-group 1 priority 100
+set interfaces irb unit 101 family inet address 1.1.2.3/25 vrrp-group 1 fast-interval 900
+set interfaces irb unit 101 family inet address 1.1.2.3/25 vrrp-group 1 accept-data
+set interfaces irb unit 101 family inet address 1.1.2.130/25
+set interfaces irb unit 101 family inet address 1.1.2.131/25 vrrp-group 2 virtual-address 1.1.2.129
+set interfaces irb unit 101 family inet address 1.1.2.131/25 vrrp-group 2 priority 150
+set interfaces irb unit 101 family inet address 1.1.2.131/25 vrrp-group 2 fast-interval 900
+set interfaces irb unit 101 family inet address 1.1.2.131/25 vrrp-group 2 accept-data
+set interfaces irb unit 1000 family inet address 2.1.1.3/25 vrrp-group 1 virtual-address 2.1.1.1
+set interfaces irb unit 1000 family inet address 2.1.1.3/25 vrrp-group 1 priority 100
+set interfaces irb unit 1000 family inet address 2.1.1.3/25 vrrp-group 1 fast-interval 900
+set interfaces irb unit 1000 family inet address 2.1.1.3/25 vrrp-group 1 accept-data
+set multi-chassis multi-chassis-protection 1.1.1.1 interface ae1
+set protocols vrrp version-3
+set protocols iccp local-ip-addr 1.1.1.2
+set protocols iccp peer 1.1.1.1 session-establishment-hold-time 50
+set protocols iccp peer 1.1.1.1 redundancy-group-id-list 1
+set protocols iccp peer 1.1.1.1 liveness-detection minimum-receive-interval 1000
+set protocols iccp peer 1.1.1.1 liveness-detection transmit-interval minimum-interval 1000
+set protocols iccp traceoptions file iccp.log
+set protocols iccp traceoptions flag all
+set protocols iccp traceoptions flag packet
+set protocols rstp traceoptions file rstp.log
+set protocols rstp traceoptions flag all
+set protocols rstp interface ae2 mode point-to-point
+set protocols rstp interface ae2 edge
+set protocols rstp bpdu-block-on-edge
+set bridge-domains vlan1000 description NET-MGMT
+set bridge-domains vlan1000 domain-type bridge
+set bridge-domains vlan1000 vlan-id 1000
+set bridge-domains vlan1000 routing-interface irb.1000
+set bridge-domains vlan101 description SERVICE-NET
+set bridge-domains vlan101 domain-type bridge
+set bridge-domains vlan101 vlan-id 101
+set bridge-domains vlan101 routing-interface irb.101
+set bridge-domains vlan5 description MC-LEG
+set bridge-domains vlan5 domain-type bridge
+set bridge-domains vlan5 vlan-id 5
+set bridge-domains vlan5 routing-interface irb.5
+set switch-options service-id 1
