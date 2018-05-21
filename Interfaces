@@ -1,0 +1,96 @@
+==================== interfaces ====================
+====================== 11-1-1 ======================
+set chassis aggregated-devices ethernet device-count 10
+set interfaces lo0 unit 0 family inet address 11.0.1.1/32
+set interfaces ge-0/0/0 description 11-1-2
+set interfaces ge-0/0/0 gigether-options 802.3ad ae1
+set interfaces ae1 description 11-1-2
+set interfaces ae1 unit 0 family inet address 11.1.1.1/30
+set interfaces ge-0/0/1 description 11-2-2
+set interfaces ge-0/0/1 gigether-options 802.3ad ae2
+set interfaces ae2 description 11-2-2
+set interfaces ae2 unit 0 family inet address 11.1.2.1/30
+set interfaces ge-0/0/7 description 22-1-2
+set interfaces ge-0/0/7 gigether-options 802.3ad ae7
+set interfaces ae7 description 22-1-2
+set interfaces ae7 unit 0 family inet address 12.1.1.11/29
+
+====================== 11-1-2 ======================
+set chassis aggregated-devices ethernet device-count 10
+set interfaces lo0 unit 0 family inet address 11.0.1.2/32
+set interfaces ge-0/0/0 description 11-1-1
+set interfaces ge-0/0/0 gigether-options 802.3ad ae1
+set interfaces ae1 description 11-1-1
+set interfaces ae1 unit 0 family inet address 11.1.1.2/30
+set interfaces ge-0/0/1 description 11-2-1
+set interfaces ge-0/0/1 gigether-options 802.3ad ae2
+set interfaces ae2 description 11-2-1
+set interfaces ae2 unit 0 family inet address 11.3.1.2/30
+set interfaces ge-0/0/7 description 22-1-1
+set interfaces ge-0/0/7 gigether-options 802.3ad ae7
+set interfaces ae7 description 22-1-1
+set interfaces ae7 unit 0 family inet address 12.1.1.22/29
+
+====================== 11-2-2 ======================
+set chassis aggregated-devices ethernet device-count 10
+set interfaces lo0 unit 0 family inet address 11.0.2.2/32
+set interfaces ge-0/0/0 description 11-2-1
+set interfaces ge-0/0/0 gigether-options 802.3ad ae1
+set interfaces ae1 description 11-2-1
+set interfaces ae1 unit 0 family inet address 11.2.2.2/30
+set interfaces ge-0/0/1 description 11-1-1
+set interfaces ge-0/0/1 gigether-options 802.3ad ae2
+set interfaces ae2 description 11-1-1
+set interfaces ae2 unit 0 family inet address 11.1.2.2/30
+set interfaces ge-0/0/7 description 22-2-1
+set interfaces ge-0/0/7 gigether-options 802.3ad ae7
+set interfaces ae7 description 22-2-1
+set interfaces ae7 unit 0 family inet address 12.2.2.22/29
+
+====================== 11-2-1 ======================
+set chassis aggregated-devices ethernet device-count 10
+set interfaces lo0 unit 0 family inet address 11.0.2.1/32
+set interfaces ge-0/0/0 description 11-2-2
+set interfaces ge-0/0/0 gigether-options 802.3ad ae1
+set interfaces ae1 description 11-2-2
+set interfaces ae1 unit 0 family inet address 11.2.2.1/30
+set interfaces ge-0/0/1 description 11-3-2
+set interfaces ge-0/0/1 gigether-options 802.3ad ae2
+set interfaces ae2 description 11-3-2
+set interfaces ae2 unit 0 family inet address 11.2.3.1/30
+set interfaces ge-0/0/7 description 22-2-2
+set interfaces ge-0/0/7 gigether-options 802.3ad ae7
+set interfaces ae7 description 22-2-2
+set interfaces ae7 unit 0 family inet address 12.2.2.11/29
+
+====================== 11-3-2 ======================
+set chassis aggregated-devices ethernet device-count 10
+set interfaces lo0 unit 0 family inet address 11.0.3.2/32
+set interfaces ge-0/0/0 description 11-3-1
+set interfaces ge-0/0/0 gigether-options 802.3ad ae1
+set interfaces ae1 description 11-3-1
+set interfaces ae1 unit 0 family inet address 11.3.3.2/30
+set interfaces ge-0/0/1 description 11-2-1
+set interfaces ge-0/0/1 gigether-options 802.3ad ae2
+set interfaces ae2 description 11-2-1
+set interfaces ae2 unit 0 family inet address 11.2.3.2/30
+set interfaces ge-0/0/7 description 22-3-1
+set interfaces ge-0/0/7 gigether-options 802.3ad ae7
+set interfaces ae7 description 22-3-1
+set interfaces ae7 unit 0 family inet address 12.3.3.22/29
+
+====================== 11-3-1 ======================
+set chassis aggregated-devices ethernet device-count 10
+set interfaces lo0 unit 0 family inet address 11.0.3.1/32
+set interfaces ge-0/0/0 description 11-3-2
+set interfaces ge-0/0/0 gigether-options 802.3ad ae1
+set interfaces ae1 description 11-3-2
+set interfaces ae1 unit 0 family inet address 11.3.3.1/30
+set interfaces ge-0/0/1 description 11-1-2
+set interfaces ge-0/0/1 gigether-options 802.3ad ae2
+set interfaces ae2 description 11-1-2
+set interfaces ae2 unit 0 family inet address 11.3.1.1/30
+set interfaces ge-0/0/7 description 22-3-2
+set interfaces ge-0/0/7 gigether-options 802.3ad ae7
+set interfaces ae7 description 22-3-2
+set interfaces ae7 unit 0 family inet address 12.3.3.11/29
