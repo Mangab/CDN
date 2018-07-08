@@ -1,0 +1,200 @@
+11-2-1#show run
+!
+hostname 11-2-1
+!
+!
+interface Loopback0
+ ip address 10.11.2.1 255.255.255.255
+!
+interface GigabitEthernet0/0
+ description 11-2-2:10.11.2.10
+ ip address 10.11.2.9 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ description 11-3-2:10.11.23.2
+ ip address 10.11.23.1 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ no ip address
+ shutdown 
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/4
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/5
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/6
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/7
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/8
+ description 123-2-BB1:11.123.2.2
+ ip address 11.123.2.1 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/9
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!         
+router ospf 1
+ router-id 10.11.2.1
+ passive-interface GigabitEthernet0/8
+ network 10.11.2.1 0.0.0.0 area 0
+ network 10.11.2.9 0.0.0.0 area 0
+ network 10.11.23.1 0.0.0.0 area 0
+ network 11.2.0.1 0.0.0.0 area 0
+ network 11.123.2.1 0.0.0.0 area 0
+!
+router bgp 65002
+ bgp router-id 10.11.2.1
+ bgp log-neighbor-changes
+ bgp confederation identifier 11
+ bgp confederation peers 65003 
+ redistribute static
+ neighbor V4-EBGP-CUST peer-group
+ neighbor V4-EBGP-CUST send-community
+ neighbor V4-EBGP-CUST default-originate
+ neighbor V4-EBGP-CUST remove-private-as
+ neighbor V4-EBGP-CUST soft-reconfiguration inbound
+ neighbor V4-EBGP-CUST route-map V4-RM-AS-CUST-IN in
+ neighbor V4-EBGP-CUST route-map V4-RM-AS-CUST-OUT out
+ neighbor V4-EBGP-11:65002 peer-group
+ neighbor V4-EBGP-11:65002 ebgp-multihop 2
+ neighbor V4-EBGP-11:65002 update-source Loopback0
+ neighbor V4-EBGP-11:65002 send-community
+ neighbor V4-EBGP-11:65002 soft-reconfiguration inbound
+ neighbor V4-EBGP-11:65002 route-map V4-RM-AS-AS65002-IN in
+ neighbor V4-EBGP-11:65002 route-map V4-RM-AS-AS65002-OUT out
+ neighbor V4-EBGP-11:65003 peer-group
+ neighbor V4-EBGP-11:65003 ebgp-multihop 2
+ neighbor V4-EBGP-11:65003 update-source Loopback0
+ neighbor V4-EBGP-11:65003 send-community
+ neighbor V4-EBGP-11:65003 soft-reconfiguration inbound
+ neighbor V4-EBGP-11:65003 route-map V4-RM-AS-AS65003-IN in
+ neighbor V4-EBGP-11:65003 route-map V4-RM-AS-AS65003-OUT out
+ neighbor 10.11.2.2 remote-as 65002
+ neighbor 10.11.2.2 peer-group V4-EBGP-11:65002
+ neighbor 10.11.2.2 description 11.2.2:65002
+ neighbor 10.11.3.2 remote-as 65003
+ neighbor 10.11.3.2 peer-group V4-EBGP-11:65003
+ neighbor 10.11.3.2 description 11-3-2:65003
+ neighbor 11.123.2.2 remote-as 123
+ neighbor 11.123.2.2 peer-group V4-EBGP-CUST
+ neighbor 11.123.2.2 description AS123-2-1
+!         
+ip forward-protocol nd
+!
+ip bgp-community new-format
+ip community-list standard V4-CL-AS65003-ASIA-DNA permit 11:65003
+ip community-list standard V4-CL-AS65002-EU_DNA permit 11:65002
+ip community-list standard V4-CL-AS65001-NA_DNA permit 11:65001
+ip community-list standard V4-CL-AS11-BH permit 11:666
+!
+no ip http server
+no ip http secure-server
+ip route 10.11.2.0 255.255.255.0 Null0
+ip route 10.11.23.0 255.255.255.0 Null0
+ip route 11.123.2.0 255.255.255.0 Null0
+!
+!
+route-map V4-RM-AS-AS65002-OUT permit 1100
+ match community V4-CL-AS65003-ASIA_DNA
+!
+route-map V4-RM-AS-AS65002-OUT deny 1200
+ match community V4-CL-AS65002-EU_DNA
+!
+route-map V4-RM-AS-AS65002-OUT permit 1300
+ match community V4-CL-AS65001-NA_DNA
+!
+route-map V4-RM-AS-AS65002-OUT permit 2000
+!
+route-map V4-RM-AS-AS65003-OUT deny 1100
+ match community V4-CL-AS65003-ASIA_DNA
+!
+route-map V4-RM-AS-AS65003-OUT permit 1200
+ match community V4-CL-AS65002-EU_DNA
+!
+route-map V4-RM-AS-AS65003-OUT permit 1300
+ match community V4-CL-AS65001-NA_DNA
+!
+route-map V4-RM-AS-AS65003-OUT permit 2000
+!
+route-map V4-RM-AS-CUST-OUT permit 2000
+!
+route-map V4-RM-AS-AS65003-IN permit 1100
+ match community V4-CL-AS65003-ASIA_DNA
+!
+route-map V4-RM-AS-AS65003-IN deny 1200
+ match community V4-CL-AS65002-EU_DNA
+!
+route-map V4-RM-AS-AS65003-IN permit 1300
+ match community V4-CL-AS65001-NA_DNA
+!
+route-map V4-RM-AS-AS65003-IN permit 2000
+!
+route-map V4-RM-AS-AS65002-IN permit 1100
+ match community V4-CL-AS65003-ASIA_DNA
+!
+route-map V4-RM-AS-AS65002-IN deny 1200
+ match community V4-CL-AS65002-EU_DNA
+!
+route-map V4-RM-AS-AS65002-IN permit 1300
+ match community V4-CL-AS65001-NA_DNA
+!
+route-map V4-RM-AS-AS65002-IN permit 2000
+!
+route-map V4-RM-AS-CUST-IN permit 1100
+ match community V4-CL-AS65003-ASIA_DNA
+!
+route-map V4-RM-AS-CUST-IN permit 1200
+ match community V4-CL-AS65002-EU_DNA
+!
+route-map V4-RM-AS-CUST-IN permit 1300
+ match community V4-CL-AS65001-NA_DNA
+!
+route-map V4-RM-AS-CUST-IN permit 1666
+ match community V4-CL-AS11-BH
+!
+route-map V4-RM-AS-CUST-IN permit 2000
+!
+!
