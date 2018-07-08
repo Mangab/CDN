@@ -1,0 +1,175 @@
+11-3-1#show run
+hostname 11-3-1
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 10.11.3.1 255.255.255.255
+!
+interface GigabitEthernet0/0
+ description 11-3-2:10.11.3.10
+ ip address 10.11.3.9 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ description 11-1-2:10.11.13.2
+ ip address 10.11.13.1 255.255.255.252
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ no ip address
+ shutdown 
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/4
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/5
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/6
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/7
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/8
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/9
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+router ospf 1
+ router-id 10.11.3.1
+ network 10.11.3.1 0.0.0.0 area 0
+ network 10.11.3.9 0.0.0.0 area 0
+ network 10.11.13.1 0.0.0.0 area 0
+!
+router bgp 65003
+ bgp router-id 10.11.3.1
+ bgp log-neighbor-changes
+ bgp confederation identifier 11
+ bgp confederation peers 65001 
+ redistribute static
+ neighbor V4-EBGP-11:65001 peer-group
+ neighbor V4-EBGP-11:65001 ebgp-multihop 2
+ neighbor V4-EBGP-11:65001 update-source Loopback0
+ neighbor V4-EBGP-11:65001 send-community
+ neighbor V4-EBGP-11:65001 soft-reconfiguration inbound
+ neighbor V4-EBGP-11:65001 route-map V4-RM-AS-AS65001-IN in
+ neighbor V4-EBGP-11:65001 route-map V4-RM-AS-AS65001-OUT out
+ neighbor V4-EBGP-11:65003 peer-group
+ neighbor V4-EBGP-11:65003 ebgp-multihop 2
+ neighbor V4-EBGP-11:65003 update-source Loopback0
+ neighbor V4-EBGP-11:65003 send-community
+ neighbor V4-EBGP-11:65003 soft-reconfiguration inbound
+ neighbor V4-EBGP-11:65003 route-map V4-RM-AS-AS65003-IN in
+ neighbor V4-EBGP-11:65003 route-map V4-RM-AS-AS65003-OUT out
+ neighbor 10.11.1.2 remote-as 65001
+ neighbor 10.11.1.2 peer-group V4-EBGP-11:65001
+ neighbor 10.11.1.2 description 11-1-2:65001
+ neighbor 10.11.3.2 remote-as 65003
+ neighbor 10.11.3.2 peer-group V4-EBGP-11:65003
+ neighbor 10.11.3.2 description 11-3-2:65003
+!
+ip forward-protocol nd
+!
+ip bgp-community new-format
+ip community-list standard V4-CL-AS65002-EU_DNA permit 11:65002
+ip community-list standard V4-CL-AS65001-NA_DNA permit 11:65001
+ip community-list standard V4-CL-AS65003-ASIA-DNA permit 11:65003
+ip community-list standard V4-CL-AS11-BH permit 11:666
+!
+no ip http server
+no ip http secure-server
+ip route 10.11.3.0 255.255.255.0 Null0
+ip route 10.11.13.0 255.255.255.0 Null0
+!
+!         
+route-map V4-RM-AS-AS65001-OUT permit 1100
+ match community V4-CL-AS65003-ASIA_DNA
+!
+route-map V4-RM-AS-AS65001-OUT permit 1200
+ match community V4-CL-AS65002-EU_DNA
+!
+route-map V4-RM-AS-AS65001-OUT deny 1300
+ match community V4-CL-AS65001-NA_DNA
+!
+route-map V4-RM-AS-AS65001-OUT permit 2000
+!
+route-map V4-RM-AS-AS65003-OUT deny 1100
+ match community V4-CL-AS65003-ASIA_DNA
+!
+route-map V4-RM-AS-AS65003-OUT permit 1200
+ match community V4-CL-AS65002-EU_DNA
+!
+route-map V4-RM-AS-AS65003-OUT permit 1300
+ match community V4-CL-AS65001-NA_DNA
+!
+route-map V4-RM-AS-AS65003-OUT permit 2000
+!
+route-map V4-RM-AS-AS65001-IN deny 1100
+ match community V4-CL-AS65003-ASIA_DNA
+!
+route-map V4-RM-AS-AS65001-IN permit 1200
+ match community V4-CL-AS65002-EU_DNA
+!
+route-map V4-RM-AS-AS65001-IN permit 1300
+ match community V4-CL-AS65001-NA_DNA
+!
+route-map V4-RM-AS-AS65001-IN permit 2000
+!
+route-map V4-RM-AS-AS65003-IN deny 1100
+ match community V4-CL-AS65003-ASIA_DNA
+!
+route-map V4-RM-AS-AS65003-IN permit 1200
+ match community V4-CL-AS65002-EU_DNA
+!
+route-map V4-RM-AS-AS65003-IN permit 1300
+ match community V4-CL-AS65001-NA_DNA
+!
+route-map V4-RM-AS-AS65003-IN permit 2000
+!
+!
