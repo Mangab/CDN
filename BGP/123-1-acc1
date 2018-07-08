@@ -1,0 +1,56 @@
+root@123-1-acc1> show configuration | display set 
+set version 14.1R4.8
+set system host-name 123-1-acc1
+set system root-authentication encrypted-password "$1$Y9IOX48r$wEb602LKTyoRUlVRkgby81"
+set system syslog user * any emergency
+set system syslog file messages any notice
+set system syslog file messages authorization info
+set system syslog file interactive-commands interactive-commands any
+set chassis aggregated-devices ethernet device-count 10
+set interfaces ge-0/0/0 description BB1:ge-0/0/4:123.1.0.17
+set interfaces ge-0/0/0 gigether-options 802.3ad ae0
+set interfaces ge-0/0/1 description BB2:ge-0/0/4:123.1.0.17
+set interfaces ge-0/0/1 gigether-options 802.3ad ae0
+set interfaces ge-0/0/5 description SV1:123.1.1.11
+set interfaces ge-0/0/5 unit 0 family bridge interface-mode access
+set interfaces ge-0/0/5 unit 0 family bridge vlan-id 100
+set interfaces ge-0/0/6 description SV2:123.1.1.141
+set interfaces ge-0/0/6 unit 0 family bridge interface-mode access
+set interfaces ge-0/0/6 unit 0 family bridge vlan-id 110
+set interfaces ge-0/0/7 description SV3:123.1.2.11
+set interfaces ge-0/0/7 unit 0 family bridge interface-mode access
+set interfaces ge-0/0/7 unit 0 family bridge vlan-id 120
+set interfaces ge-0/0/8 description SV4:123.1.2.141
+set interfaces ge-0/0/8 unit 0 family bridge interface-mode access
+set interfaces ge-0/0/8 unit 0 family bridge vlan-id 130
+set interfaces ae0 description BB1/2:ae1:123.1.0.17
+set interfaces ae0 aggregated-ether-options lacp active
+set interfaces ae0 unit 0 family bridge interface-mode trunk
+set interfaces ae0 unit 0 family bridge vlan-id-list 100
+set interfaces ae0 unit 0 family bridge vlan-id-list 110
+set interfaces ae0 unit 0 family bridge vlan-id-list 120
+set interfaces ae0 unit 0 family bridge vlan-id-list 130
+set interfaces ae0 unit 0 family bridge vlan-id-list 1000
+set interfaces irb unit 1000 family inet address 123.1.0.24/28
+set routing-options static route 0.0.0.0/0 next-hop 123.1.0.17
+set bridge-domains vlan100 description SERVICE_100
+set bridge-domains vlan100 domain-type bridge
+set bridge-domains vlan100 vlan-id 100
+set bridge-domains vlan100 routing-interface irb.100
+set bridge-domains vlan1000 description NET-MGMT
+set bridge-domains vlan1000 domain-type bridge
+set bridge-domains vlan1000 vlan-id 1000
+set bridge-domains vlan1000 routing-interface irb.1000
+set bridge-domains vlan110 description SERVICE_110
+set bridge-domains vlan110 domain-type bridge
+set bridge-domains vlan110 vlan-id 110
+set bridge-domains vlan110 routing-interface irb.110
+set bridge-domains vlan120 description SERVICE_120
+set bridge-domains vlan120 domain-type bridge
+set bridge-domains vlan120 vlan-id 120
+set bridge-domains vlan120 routing-interface irb.120
+set bridge-domains vlan130 description SERVICE_130
+set bridge-domains vlan130 domain-type bridge
+set bridge-domains vlan130 vlan-id 130
+set bridge-domains vlan130 routing-interface irb.130
+
