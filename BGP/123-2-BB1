@@ -1,0 +1,113 @@
+root@123-2-BB1> show configuration | display set 
+set version 14.1R4.8
+set system host-name 123-2-BB1
+set system root-authentication encrypted-password "$1$RZo/gcR9$oB7LX1g9plQNKFnK6ddbp0"
+set system syslog user * any emergency
+set system syslog file messages any notice
+set system syslog file messages authorization info
+set system syslog file interactive-commands interactive-commands any
+set interfaces ge-0/0/5 description 123_200_1:123.1.4.141
+set interfaces ge-0/0/5 unit 0 family bridge interface-mode access
+set interfaces ge-0/0/5 unit 0 family bridge vlan-id 200
+set interfaces ge-0/0/8 description 11-2-1:11.123.2.1
+set interfaces ge-0/0/8 unit 0 family inet address 11.123.2.2/30
+set interfaces irb unit 200 family inet address 123.1.4.129/25
+set interfaces lo0 unit 0 family inet address 123.1.4.1/32
+set routing-options rib inet.0 static route 123.1.4.0/24 discard
+set routing-options rib inet.0 static route 123.1.4.0/24 community 123:400
+set routing-options autonomous-system 123
+set routing-options autonomous-system loops 3
+set protocols bgp group V4-EBGP-AS11 type external
+set protocols bgp group V4-EBGP-AS11 description EBGP:AS11:IPv4
+set protocols bgp group V4-EBGP-AS11 import V4-RM-DENY-ANY
+set protocols bgp group V4-EBGP-AS11 export V4-RM-DENY-ANY
+set protocols bgp group V4-EBGP-AS11 remove-private
+set protocols bgp group V4-EBGP-AS11 peer-as 11
+set protocols bgp group V4-EBGP-AS11 multipath multiple-as
+set protocols bgp group V4-EBGP-AS11 neighbor 11.123.2.1 description AS11
+set protocols bgp group V4-EBGP-AS11 neighbor 11.123.2.1 local-address 11.123.2.2
+set protocols bgp group V4-EBGP-AS11 neighbor 11.123.2.1 import V4-RM-AS1111-IN
+set protocols bgp group V4-EBGP-AS11 neighbor 11.123.2.1 export V4-RM-AS1111-OUT
+set policy-options prefix-list V4-PL-ANYCAST 66.114.55.0/24
+set policy-options prefix-list V4-PL-AS123-2 123.1.4.0/24
+set policy-options prefix-list V4-PL-BH 192.168.254.0/24
+set policy-options prefix-list V4-PL-BH-HOST 192.168.254.11/32
+set policy-options prefix-list V4-PL-BH-HOST 192.168.254.12/32
+set policy-options prefix-list V4-PL-BH-HOST 192.168.254.13/32
+set policy-options prefix-list V4-PL-BH-HOST 192.168.254.14/32
+set policy-options prefix-list V4-PL-BOGON 10.0.0.0/8
+set policy-options prefix-list V4-PL-BOGON 127.0.0.0/8
+set policy-options prefix-list V4-PL-BOGON 169.254.0.0/16
+set policy-options prefix-list V4-PL-BOGON 172.16.0.0/12
+set policy-options prefix-list V4-PL-BOGON 192.0.2.0/24
+set policy-options prefix-list V4-PL-BOGON 192.168.0.0/16
+set policy-options prefix-list V4-PL-BOGON 198.18.0.0/15
+set policy-options prefix-list V4-PL-BOGON 240.0.0.0/4
+set policy-options prefix-list V4-PL-RFC1918 10.0.0.0/8
+set policy-options prefix-list V4-PL-RFC1918 172.16.0.0/12
+set policy-options prefix-list V4-PL-RFC1918 192.168.0.0/16
+set policy-options prefix-list V4-PL-SECURE-NTP 192.168.0.0/16
+set policy-options prefix-list V4-PL-AS11-NO_PREF 192.168.254.0/24
+set policy-options prefix-list V4-PL-AS11-PREF 192.168.254.0/24
+set policy-options prefix-list V4-PL-DEFAULT 0.0.0.0/0
+set policy-options policy-statement V4-RM-AS1111-IN term 201 from prefix-list V4-PL-RFC1918
+set policy-options policy-statement V4-RM-AS1111-IN term 201 then reject
+set policy-options policy-statement V4-RM-AS1111-IN term 210 from prefix-list V4-PL-BOGON
+set policy-options policy-statement V4-RM-AS1111-IN term 210 then reject
+set policy-options policy-statement V4-RM-AS1111-IN term 220 from prefix-list V4-PL-AS123-2
+set policy-options policy-statement V4-RM-AS1111-IN term 220 then reject
+set policy-options policy-statement V4-RM-AS1111-IN term 240 from prefix-list V4-PL-DEFAULT
+set policy-options policy-statement V4-RM-AS1111-IN term 240 then preference 20
+set policy-options policy-statement V4-RM-AS1111-IN term 240 then community add V4-CL-FULL
+set policy-options policy-statement V4-RM-AS1111-IN term 240 then accept
+set policy-options policy-statement V4-RM-AS1111-IN term 250 from prefix-list V4-PL-AS11-PREF
+set policy-options policy-statement V4-RM-AS1111-IN term 250 then local-preference 120
+set policy-options policy-statement V4-RM-AS1111-IN term 250 then community add V4-CL-FULL
+set policy-options policy-statement V4-RM-AS1111-IN term 250 then accept
+set policy-options policy-statement V4-RM-AS1111-IN term 260 from prefix-list V4-PL-AS11-NO_PREF
+set policy-options policy-statement V4-RM-AS1111-IN term 260 then local-preference 90
+set policy-options policy-statement V4-RM-AS1111-IN term 260 then community add V4-CL-FULL
+set policy-options policy-statement V4-RM-AS1111-IN term 260 then accept
+set policy-options policy-statement V4-RM-AS1111-IN term 270 then local-preference 100
+set policy-options policy-statement V4-RM-AS1111-IN term 270 then community add V4-CL-FULL
+set policy-options policy-statement V4-RM-AS1111-IN term 270 then accept
+set policy-options policy-statement V4-RM-AS1111-OUT term 301 from prefix-list V4-PL-RFC1918
+set policy-options policy-statement V4-RM-AS1111-OUT term 301 then reject
+set policy-options policy-statement V4-RM-AS1111-OUT term 310 from prefix-list V4-PL-BOGON
+set policy-options policy-statement V4-RM-AS1111-OUT term 310 then reject
+set policy-options policy-statement V4-RM-AS1111-OUT term 315 from community V4-CL-BH
+set policy-options policy-statement V4-RM-AS1111-OUT term 315 from route-filter 0.0.0.0/0 prefix-length-range /32-/32
+set policy-options policy-statement V4-RM-AS1111-OUT term 315 then community delete V4-CL-ANY
+set policy-options policy-statement V4-RM-AS1111-OUT term 315 then community add V4-CL-AS11-BH
+set policy-options policy-statement V4-RM-AS1111-OUT term 315 then accept
+set policy-options policy-statement V4-RM-AS1111-OUT term 316 from community V4-CL-BH-HOST
+set policy-options policy-statement V4-RM-AS1111-OUT term 316 from prefix-list V4-PL-BH-HOST
+set policy-options policy-statement V4-RM-AS1111-OUT term 316 then community delete V4-CL-ANY
+set policy-options policy-statement V4-RM-AS1111-OUT term 316 then community add V4-CL-AS11-BH
+set policy-options policy-statement V4-RM-AS1111-OUT term 316 then accept
+set policy-options policy-statement V4-RM-AS1111-OUT term 320 from community V4-CL-ADVERTISE
+set policy-options policy-statement V4-RM-AS1111-OUT term 320 from prefix-list V4-PL-AS123-2
+set policy-options policy-statement V4-RM-AS1111-OUT term 320 then community delete V4-CL-ANY
+set policy-options policy-statement V4-RM-AS1111-OUT term 320 then accept
+set policy-options policy-statement V4-RM-AS1111-OUT term 340 from community V4-CL-ANYCAST
+set policy-options policy-statement V4-RM-AS1111-OUT term 340 from prefix-list V4-PL-ANYCAST
+set policy-options policy-statement V4-RM-AS1111-OUT term 340 then community delete V4-CL-ANY
+set policy-options policy-statement V4-RM-AS1111-OUT term 340 then community add V4-CL-AS11-ASIA_DNA
+set policy-options policy-statement V4-RM-AS1111-OUT term 340 then community add V4-CL-AS11-EU_DNA
+set policy-options policy-statement V4-RM-AS1111-OUT term 340 then accept
+set policy-options policy-statement V4-RM-AS1111-OUT term 999 then reject
+set policy-options policy-statement V4-RM-DENY-ANY term 101 then reject
+set policy-options community V4-CL-ADVERTISE members 123:400
+set policy-options community V4-CL-ANY members *:*
+set policy-options community V4-CL-ANYCAST members "123:45[3-4]"
+set policy-options community V4-CL-AS11-ASIA_DNA members 11:2590
+set policy-options community V4-CL-AS11-BH members 11:2666
+set policy-options community V4-CL-AS11-EU_DNA members 11:2490
+set policy-options community V4-CL-AS11-NA_DNA members 11:2990
+set policy-options community V4-CL-BH members 123:666
+set policy-options community V4-CL-BH-HOST members 123:667
+set policy-options community V4-CL-FULL members 123:300
+set bridge-domains vlan200 description SERVICE-NET
+set bridge-domains vlan200 domain-type bridge
+set bridge-domains vlan200 vlan-id 200
+set bridge-domains vlan200 routing-interface irb.200
