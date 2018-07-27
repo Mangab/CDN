@@ -1,0 +1,228 @@
+22-1-1-3#show run
+Building configuration...
+
+Current configuration : 4976 bytes
+!
+! Last configuration change at 07:16:20 UTC Fri Jul 27 2018
+!
+version 15.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname 22-1-1-3
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+ethernet lmi ce
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+no ip icmp rate-limit unreachable
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!         
+!
+redundancy
+!
+no cdp log mismatch duplex
+!
+ip tcp synwait-time 5
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ ip address 22.1.1.3 255.255.255.255
+!
+interface Loopback1
+ ip address 1.1.3.1 255.255.255.255
+!
+interface GigabitEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/2
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/3
+ ip address 22.1.0.10 255.255.255.248
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/4
+ ip address 22.1.0.18 255.255.255.248
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/5
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/6
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/7
+ no ip address
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/8
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/9
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+ media-type rj45
+!
+router ospf 22
+ router-id 22.1.1.3
+ network 22.1.0.10 0.0.0.0 area 1
+ network 22.1.0.18 0.0.0.0 area 1
+ network 22.1.1.3 0.0.0.0 area 1
+!
+router bgp 22
+ bgp router-id 22.1.1.3
+ bgp log-neighbor-changes
+ redistribute static route-map V4-RM-S2B
+ neighbor V4-EBGP-22:RR peer-group
+ neighbor V4-EBGP-22:RR ebgp-multihop 2
+ neighbor V4-EBGP-22:RR update-source Loopback0
+ neighbor V4-EBGP-22:RR send-community
+ neighbor V4-EBGP-22:RR soft-reconfiguration inbound
+ neighbor V4-EBGP-22:RR route-map V4-RM-AS22RR-IN in
+ neighbor V4-EBGP-22:RR route-map V4-RM-AS22RR-OUT out
+ neighbor 22.1.1.1 remote-as 22
+ neighbor 22.1.1.1 peer-group V4-EBGP-22:RR
+ neighbor 22.1.1.1 description 22-1-1-1:221RR
+ neighbor 22.1.1.2 remote-as 22
+ neighbor 22.1.1.2 peer-group V4-EBGP-22:RR
+ neighbor 22.1.1.2 description 22-1-1-2:221RR
+!
+ip forward-protocol nd
+!
+ip bgp-community new-format
+ip community-list standard AS221-1-3 permit 22:2213
+!
+no ip http server
+no ip http secure-server
+ip route 1.1.3.0 255.255.255.0 Null0 tag 1
+!
+!
+route-map V4-RM-AS22RR-OUT permit 1000
+ match community AS221-1-3
+!
+route-map V4-RM-AS22RR-IN permit 2000
+!
+route-map V4-RM-S2B permit 10
+ match tag 1
+ match source-protocol static
+ set origin igp
+ set community 22:2213
+!
+!
+!
+control-plane
+!
+banner exec ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner incoming ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+banner login ^C
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************^C
+!
+line con 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line aux 0
+ exec-timeout 0 0
+ privilege level 15
+ logging synchronous
+line vty 0 4
+ login
+ transport input none
+!
+no scheduler allocate
+!
+end
