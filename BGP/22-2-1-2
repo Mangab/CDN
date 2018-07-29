@@ -1,9 +1,9 @@
-22-2-1-2#show run
+22-2-1-2#sh run
 Building configuration...
 
-Current configuration : 3954 bytes
+Current configuration : 6922 bytes
 !
-! Last configuration change at 03:48:28 UTC Fri Jul 27 2018
+! Last configuration change at 02:39:40 UTC Sun Jul 29 2018
 !
 version 15.6
 service timestamps debug datetime msec
@@ -69,6 +69,9 @@ ip tcp synwait-time 5
 interface Loopback0
  ip address 22.2.1.2 255.255.255.255
 !
+interface Loopback1
+ ip address 1.2.2.1 255.255.255.255
+!
 interface GigabitEthernet0/0
  ip address 22.2.0.2 255.255.255.248
  duplex auto
@@ -92,7 +95,7 @@ interface GigabitEthernet0/3
  duplex auto
  speed auto
  media-type rj45
-!         
+!
 interface GigabitEthernet0/4
  ip address 22.2.0.17 255.255.255.248
  duplex auto
@@ -138,12 +141,92 @@ router ospf 22
  network 22.2.0.17 0.0.0.0 area 2
  network 22.2.1.2 0.0.0.0 area 0
 !
+router bgp 22
+ bgp router-id 22.2.1.2
+ bgp cluster-id 222
+ bgp log-neighbor-changes
+ redistribute static route-map V4-RM-S2B
+ neighbor V4-iBGP-22-1:RR peer-group
+ neighbor V4-iBGP-22-1:RR ebgp-multihop 255
+ neighbor V4-iBGP-22-1:RR update-source Loopback0
+ neighbor V4-iBGP-22-1:RR send-community
+ neighbor V4-iBGP-22-1:RR soft-reconfiguration inbound
+ neighbor V4-iBGP-22-1:RR route-map V4-RM-AS22RR-1-IN in
+ neighbor V4-iBGP-22-1:RR route-map V4-RM-AS22RR-1-OUT out
+ neighbor V4-iBGP-22-2:RR peer-group
+ neighbor V4-iBGP-22-2:RR ebgp-multihop 255
+ neighbor V4-iBGP-22-2:RR update-source Loopback0
+ neighbor V4-iBGP-22-2:RR send-community
+ neighbor V4-iBGP-22-2:RR soft-reconfiguration inbound
+ neighbor V4-iBGP-22-2:RR route-map V4-RM-AS22RR-2-IN in
+ neighbor V4-iBGP-22-2:RR route-map V4-RM-AS22RR-2-OUT out
+ neighbor V4-iBGP-22-3:RR peer-group
+ neighbor V4-iBGP-22-3:RR ebgp-multihop 255
+ neighbor V4-iBGP-22-3:RR update-source Loopback0
+ neighbor V4-iBGP-22-3:RR send-community
+ neighbor V4-iBGP-22-3:RR soft-reconfiguration inbound
+ neighbor V4-iBGP-22-3:RR route-map V4-RM-AS22RR-3-IN in
+ neighbor V4-iBGP-22-3:RR route-map V4-RM-AS22RR-3-OUT out
+ neighbor V4-iBGP-22-2:RC peer-group
+ neighbor V4-iBGP-22-2:RC ebgp-multihop 2
+ neighbor V4-iBGP-22-2:RC update-source Loopback0
+ neighbor V4-iBGP-22-2:RC route-reflector-client
+ neighbor V4-iBGP-22-2:RC send-community
+ neighbor V4-iBGP-22-2:RC soft-reconfiguration inbound
+ neighbor V4-iBGP-22-2:RC route-map V4-RM-AS22-2C-IN in
+ neighbor V4-iBGP-22-2:RC route-map V4-RM-AS22-2C-OUT out
+ neighbor 22.1.1.1 remote-as 22
+ neighbor 22.1.1.1 peer-group V4-iBGP-22-1:RR
+ neighbor 22.1.1.1 description 22-1-1-1:22-1RR
+ neighbor 22.1.1.2 remote-as 22
+ neighbor 22.1.1.2 peer-group V4-iBGP-22-1:RR
+ neighbor 22.1.1.2 description 22-1-1-2:22-1RR
+ neighbor 22.2.1.1 remote-as 22
+ neighbor 22.2.1.1 peer-group V4-iBGP-22-2:RR
+ neighbor 22.2.1.1 description 22-2-1-1:22-2RR
+ neighbor 22.2.1.3 remote-as 22
+ neighbor 22.2.1.3 peer-group V4-iBGP-22-2:RC
+ neighbor 22.2.1.3 description 22-2-1-3:22-2C
+ neighbor 22.3.1.1 remote-as 22
+ neighbor 22.3.1.1 peer-group V4-iBGP-22-3:RR
+ neighbor 22.3.1.1 description 22-3-1-1:22-3RR
+ neighbor 22.3.1.2 remote-as 22
+ neighbor 22.3.1.2 peer-group V4-iBGP-22-3:RR
+ neighbor 22.3.1.2 description 22-3-1-2:22-3RR
+!
 ip forward-protocol nd
 !
+ip bgp-community new-format
+ip community-list standard AS22-2-2 permit 22:2222
 !
 no ip http server
 no ip http secure-server
+ip route 1.2.2.0 255.255.255.0 Null0 tag 2222
 !
+!
+route-map V4-RM-DENY-ALL deny 1000
+!
+route-map V4-RM-AS22RR-1-OUT permit 2000
+!         
+route-map V4-RM-AS22RR-3-OUT permit 2000
+!
+route-map V4-RM-AS22RR-2-OUT permit 2000
+!
+route-map V4-RM-AS22-2C-IN permit 2000
+!
+route-map V4-RM-AS22-2C-OUT permit 2000
+!
+route-map V4-RM-AS22RR-1-IN permit 2000
+!
+route-map V4-RM-AS22RR-2-IN permit 2000
+!
+route-map V4-RM-AS22RR-3-IN permit 2000
+!
+route-map V4-RM-S2B permit 10
+ match tag 2222
+ match source-protocol static
+ set origin igp
+ set community 22:2222
 !
 !
 !
